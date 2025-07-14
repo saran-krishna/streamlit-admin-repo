@@ -205,13 +205,13 @@ class AdminDashboard:
             if response.status_code == 200:
                 return response.json()
             elif response.status_code == 404:
-                st.warning("📊 Analytics endpoint not found. Using sample data for demonstration.")
+                st.info("📊 Analytics endpoint not found. Using sample data for demonstration.")
                 return None
             elif response.status_code == 500:
-                st.warning("🔧 Railway backend experiencing issues. Using sample data for demonstration.")
+                st.info("🔧 Railway backend connected but no data found for this company. Generate some tokens first to create analytics data.")
                 return None
             else:
-                st.warning(f"📡 API returned status {response.status_code}. Using sample data for demonstration.")
+                st.info(f"📡 API returned status {response.status_code}. Using sample data for demonstration.")
                 return None
                 
         except requests.exceptions.Timeout:
