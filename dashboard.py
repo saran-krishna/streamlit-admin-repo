@@ -186,7 +186,7 @@ class AdminDashboard:
             st.rerun()
     
     def get_analytics_data(self, team=None, days=30):
-        """Fetch analytics data from API"""
+        """Fetch analytics data from Railway API"""
         try:
             params = {
                 'company_name': st.session_state.selected_company,
@@ -195,14 +195,33 @@ class AdminDashboard:
             if team and team != 'All Teams':
                 params['team'] = team
             
-            response = requests.get(f"{self.api_base_url}/api/admin/analytics", params=params)
+            # Add timeout to prevent hanging
+            response = requests.get(
+                f"{self.api_base_url}/api/admin/analytics", 
+                params=params,
+                timeout=10
+            )
+            
             if response.status_code == 200:
                 return response.json()
-            else:
-                st.error(f"Failed to fetch data: {response.status_code}")
+            elif response.status_code == 404:
+                st.warning("📊 Analytics endpoint not found. Using sample data for demonstration.")
                 return None
+            elif response.status_code == 500:
+                st.warning("🔧 Railway backend experiencing issues. Using sample data for demonstration.")
+                return None
+            else:
+                st.warning(f"📡 API returned status {response.status_code}. Using sample data for demonstration.")
+                return None
+                
+        except requests.exceptions.Timeout:
+            st.warning("⏱️ API request timed out. Using sample data for demonstration.")
+            return None
+        except requests.exceptions.ConnectionError:
+            st.warning("🌐 Cannot connect to Railway backend. Using sample data for demonstration.")
+            return None
         except Exception as e:
-            st.error(f"Error connecting to API: {e}")
+            st.warning(f"⚠️ API connection error: {str(e)[:100]}. Using sample data for demonstration.")
             return None
     
     def generate_token(self, email, name, team):
@@ -277,10 +296,10 @@ class AdminDashboard:
                     'wellness_score': np.random.uniform(-1, 1)
                 },
                 'conversation_length': np.random.randint(10, 100),
-                'key_topics': np.random.choice([
-                    ['work_pressure'], ['team_dynamics'], ['career_growth'], 
-                    ['work_life_balance'], ['management_issues'], ['compensation']
-                ])
+                'key_topics': [np.random.choice([
+                    'work_pressure', 'team_dynamics', 'career_growth', 
+                    'work_life_balance', 'management_issues', 'compensation'
+                ])]
             })
         
         return {
