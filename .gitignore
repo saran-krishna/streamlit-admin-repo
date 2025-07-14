@@ -1,0 +1,42 @@
+# Environment
+.env
+.env.local
+.env.production
+
+# Secrets - NEVER COMMIT
+secrets.toml
+*secrets*.toml
+*SECRETS*
+*API_KEY*
+*CREDENTIALS*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
